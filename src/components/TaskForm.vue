@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box form">
     <div class="columns">
       <div class="column is-8" role="form" aria-label="Form to create new task">
         <input
@@ -22,6 +22,7 @@ import TimerComponent from "./TimerComponent.vue";
 
 export default defineComponent({
   name: "TaskForm",
+  emits: ["onSaveTask"],
   components: {
     TimerComponent,
   },
@@ -32,8 +33,18 @@ export default defineComponent({
   },
   methods: {
     taskFinished(TimePassed: number): void {
-      this.description = "";
+      this.$emit("onSaveTask", {
+        timeSeconds: TimePassed,
+        description: this.description,
+      });
     },
   },
 });
 </script>
+
+<style>
+.form {
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+</style>
