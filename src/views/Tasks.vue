@@ -1,12 +1,12 @@
 <template>
     <TaskForm @onSaveTask="saveTask" />
     <div class="taskList">
+        <BoxComponent v-if="emptyList"> No tasks yet! </BoxComponent>
         <TaskComponent
           v-for="(task, index) in tasks"
           :key="index"
           :task="task"
         />
-        <BoxComponent v-if="emptyList"> No tasks yet! </BoxComponent>
     </div>
 </template>
 
