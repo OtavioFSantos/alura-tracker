@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import IProject from "../interfaces/IProject.ts";
+import IProject from "../interface/IProject";
 
 export default defineComponent({
   name: "Projects-component",
