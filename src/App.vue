@@ -23,8 +23,8 @@ export default defineComponent({
   },
   data() {
     return {
-      darkModeActivated: false
-    }
+      darkModeActivated: false,
+    };
   },
   methods: {
     changeTheme(darkModeActivated: boolean) {
@@ -42,6 +42,9 @@ main {
 main.dark-mode {
   --bg-primary: #2b2d42;
   --text-primary: #ddd;
+}
+.taskList {
+  padding: 1.25rem;
 }
 .content {
   background-color: var(--bg-primary);
