@@ -23,7 +23,20 @@ import { defineComponent } from "vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
-  name: "Forms",
+  name: "Forms-component",
+  props: {
+    id: {
+      type: String,
+    },
+  },
+  mounted() {
+    if (this.id) {
+      const project = this.store.state.projects.find(
+        (proj) => proj.id == this.id
+      );
+      this.projectName = project?.name || "";
+    }
+  },
   data() {
     return {
       projectName: "",
@@ -31,7 +44,11 @@ export default defineComponent({
   },
   methods: {
     save() {
-      this.store.commit("ADD_PROJECT", this.projectName);
+      if (this.id) {
+        //edit
+      } else {
+        this.store.commit("ADD_PROJECT", this.projectName);
+      }
       this.projectName = "";
       this.$router.push("/projects");
     },
