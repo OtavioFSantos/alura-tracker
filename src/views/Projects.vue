@@ -1,49 +1,15 @@
 <template>
-  <section class="projects">
+  <div class="projects">
     <h1 class="title">Projects</h1>
-    <router-link to="/projects/new" class="button">
-      <span class="icon is-small">
-        <i class="fa fa-plus"></i>
-      </span>
-      <span>New Project</span>
-    </router-link>
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="project in projects" :key="project.id">
-          <td>{{ project.id }}</td>
-          <td>{{ project.name }}</td>
-          <td>
-            <router-link :to="`/projects/${project.id}`" class="button">
-              <span class="icon is-small">
-                <i class="fa fa-pencil-alt"></i>
-              </span>
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { useStore } from "@/store";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Projects-component",
-  setup() {
-    const store = useStore();
-    return {
-      projects: computed(() => store.state.projects),
-    };
-  },
 });
 </script>
 
