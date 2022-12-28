@@ -1,13 +1,21 @@
 import INotification from "@/interface/INotification";
 import IProject from "@/interface/IProject";
 import { InjectionKey } from "vue";
+import http from "@/http";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import {
   ADD_PROJECT,
   REMOVE_PROJECT,
   EDIT_PROJECT,
   NOTIFY,
+  DEFINE_PROJECTS,
 } from "./type-mutations";
+import {
+  ERASE_PROJECT,
+  GET_PROJECTS,
+  MODIFY_PROJECT,
+  REGISTER_PROJECT,
+} from "./type-actions";
 
 interface State {
   projects: IProject[];
@@ -36,6 +44,9 @@ export const store = createStore<State>({
     [REMOVE_PROJECT](state, id: string) {
       state.projects = state.projects.filter((proj) => proj.id != id);
     },
+    [DEFINE_PROJECTS](state, projects: IProject[]) {
+      state.projects = projects;
+    },
     [NOTIFY](state, newNotification: INotification) {
       newNotification.id = new Date().getTime();
       state.notifications.push(newNotification);
@@ -44,6 +55,24 @@ export const store = createStore<State>({
           (notification) => notification.id != newNotification.id
         );
       }, 3000);
+    },
+  },
+  actions: {
+    [GET_PROJECTS]({ commit }) {
+      http
+        .get("projects")
+        .then((answer) => commit(DEFINE_PROJECTS, answer.data));
+    },
+    [REGISTER_PROJECT](context, projectName: string) {
+      return http.post("/projects", { name: projectName });
+    },
+    [MODIFY_PROJECT](context, project: IProject) {
+      return http.put(`/projects/${project.id}`, project);
+    },
+    [ERASE_PROJECT]({ commit }, id: string) {
+      return http.delete(`/projects/${id}`).then(() => {
+        this.commit(REMOVE_PROJECT, id);
+      });
     },
   },
 });
