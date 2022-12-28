@@ -22,7 +22,7 @@ import { defineComponent } from "vue";
 import useNotifier from "@/hooks/notifier";
 import { TypeNotification } from "@/interface/INotification";
 import { useStore } from "@/store";
-import { ADD_PROJECT, EDIT_PROJECT } from "@/store/type-mutations";
+import { MODIFY_PROJECT, REGISTER_PROJECT } from "@/store/type-actions";
 
 export default defineComponent({
   name: "Forms-component",
@@ -47,25 +47,30 @@ export default defineComponent({
   methods: {
     save() {
       if (this.id) {
-        this.store.commit(EDIT_PROJECT, {
-          id: this.id,
-          name: this.projectName,
-        });
-        this.notify(
-          TypeNotification.WARNING,
-          "Project modified",
-          "Project is now modified"
-        );
+        this.store
+          .dispatch(MODIFY_PROJECT, {
+            id: this.id,
+            name: this.projectName,
+          })
+          .then(() => {
+            this.notify(
+              TypeNotification.WARNING,
+              "Project modified",
+              "Project is now modified"
+            );
+            this.$router.push("/projects");
+          });
       } else {
-        this.store.commit(ADD_PROJECT, this.projectName);
-        this.notify(
-          TypeNotification.SUCCESS,
-          "Project created",
-          "Project is now available"
-        );
+        this.store.dispatch(REGISTER_PROJECT, this.projectName).then(() => {
+          this.notify(
+            TypeNotification.SUCCESS,
+            "Project created",
+            "Project is now available"
+          );
+          this.projectName = "";
+          this.$router.push("/projects");
+        });
       }
-      this.projectName = "";
-      this.$router.push("/projects");
     },
   },
   setup() {
