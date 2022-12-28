@@ -40,19 +40,28 @@
 import { defineComponent, computed } from "vue";
 import { useStore } from "@/store";
 import { REMOVE_PROJECT } from "@/store/type-mutations";
+import useNotifier from "@/hooks/notifier";
+import { TypeNotification } from "@/interface/INotification";
 
 export default defineComponent({
   name: "List-component",
   methods: {
     remove(id: string) {
+      this.notify(
+        TypeNotification.FAIL,
+        "Project removed",
+        "Project is not available anymore"
+      );
       this.store.commit(REMOVE_PROJECT, id);
     },
   },
   setup() {
     const store = useStore();
+    const { notify } = useNotifier();
     return {
       projects: computed(() => store.state.projects),
       store,
+      notify,
     };
   },
 });

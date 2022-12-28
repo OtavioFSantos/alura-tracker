@@ -19,6 +19,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import useNotifier from "@/hooks/notifier";
+import { TypeNotification } from "@/interface/INotification";
 import { useStore } from "@/store";
 import { ADD_PROJECT, EDIT_PROJECT } from "@/store/type-mutations";
 
@@ -49,8 +51,18 @@ export default defineComponent({
           id: this.id,
           name: this.projectName,
         });
+        this.notify(
+          TypeNotification.WARNING,
+          "Project modified",
+          "Project is now modified"
+        );
       } else {
         this.store.commit(ADD_PROJECT, this.projectName);
+        this.notify(
+          TypeNotification.SUCCESS,
+          "Project created",
+          "Project is now available"
+        );
       }
       this.projectName = "";
       this.$router.push("/projects");
@@ -58,8 +70,10 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { notify } = useNotifier();
     return {
       store,
+      notify,
     };
   },
 });
