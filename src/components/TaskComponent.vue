@@ -1,7 +1,8 @@
 <template>
   <BoxComponent>
     <div class="columns">
-      <div class="column is-7">{{ task.description || "Generic Task" }}</div>
+      <div class="column is-4">{{ task.description || "Generic Task" }}</div>
+      <div class="column is-5">{{ task.project?.name || "N/D" }}</div>
       <div class="column">
         <TimePassed :timeSeconds="task.timeSeconds" />
       </div>
