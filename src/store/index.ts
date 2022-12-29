@@ -9,16 +9,22 @@ import {
   EDIT_PROJECT,
   NOTIFY,
   DEFINE_PROJECTS,
+  DEFINE_TASKS,
+  ADD_TASK,
 } from "./type-mutations";
 import {
   ERASE_PROJECT,
   GET_PROJECTS,
+  GET_TASKS,
   MODIFY_PROJECT,
   REGISTER_PROJECT,
+  REGISTER_TASK,
 } from "./type-actions";
+import ITask from "@/interface/ITask";
 
 interface State {
   projects: IProject[];
+  tasks: ITask[];
   notifications: INotification[];
 }
 
@@ -27,6 +33,7 @@ export const key: InjectionKey<Store<State>> = Symbol();
 export const store = createStore<State>({
   state: {
     projects: [],
+    tasks: [],
     notifications: [],
   },
   mutations: {
@@ -37,6 +44,9 @@ export const store = createStore<State>({
       } as IProject;
       state.projects.push(project);
     },
+    [ADD_TASK](state, task: ITask) {
+      state.tasks.push(task);
+    },
     [EDIT_PROJECT](state, project: IProject) {
       const index = state.projects.findIndex((proj) => proj.id === project.id);
       state.projects[index] = project;
@@ -46,6 +56,9 @@ export const store = createStore<State>({
     },
     [DEFINE_PROJECTS](state, projects: IProject[]) {
       state.projects = projects;
+    },
+    [DEFINE_TASKS](state, tasks: ITask[]) {
+      state.tasks = tasks;
     },
     [NOTIFY](state, newNotification: INotification) {
       newNotification.id = new Date().getTime();
@@ -61,17 +74,25 @@ export const store = createStore<State>({
     [GET_PROJECTS]({ commit }) {
       http
         .get("projects")
-        .then((answer) => commit(DEFINE_PROJECTS, answer.data));
+        .then((response) => commit(DEFINE_PROJECTS, response.data));
+    },
+    [GET_TASKS]({ commit }) {
+      http.get("tasks").then((response) => commit(DEFINE_TASKS, response.data));
     },
     [REGISTER_PROJECT](context, projectName: string) {
       return http.post("/projects", { name: projectName });
+    },
+    [REGISTER_TASK]({ commit }, task: ITask) {
+      return http
+        .post("/tasks", task)
+        .then((response) => commit(ADD_TASK, response.data));
     },
     [MODIFY_PROJECT](context, project: IProject) {
       return http.put(`/projects/${project.id}`, project);
     },
     [ERASE_PROJECT]({ commit }, id: string) {
       return http.delete(`/projects/${id}`).then(() => {
-        this.commit(REMOVE_PROJECT, id);
+        commit(REMOVE_PROJECT, id);
       });
     },
   },
