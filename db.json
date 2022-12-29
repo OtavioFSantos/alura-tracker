@@ -1,3 +1,15 @@
 {
-  "projects": []
+  "projects": [],
+  "tasks": [
+    {
+      "timeSeconds": 3,
+      "description": "Estudar Vue",
+      "id": 1
+    },
+    {
+      "timeSeconds": 4,
+      "description": "Desenhar",
+      "id": 2
+    }
+  ]
 }

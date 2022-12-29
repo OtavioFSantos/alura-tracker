@@ -2,3 +2,7 @@ export const GET_PROJECTS = "GET_PROJECTS";
 export const REGISTER_PROJECT = "REGISTER_PROJECT";
 export const MODIFY_PROJECT = "MODIFY_PROJECT";
 export const ERASE_PROJECT = "ERASE_PROJECT";
+
+export const GET_TASKS = "GET_TASKS";
+export const REGISTER_TASK = "REGISTER_TASK";
+export const MODIFY_TASK = "MODIFY_TASK";
