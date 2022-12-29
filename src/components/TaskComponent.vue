@@ -1,6 +1,6 @@
 <template>
   <BoxComponent>
-    <div class="columns">
+    <div class="columns task" @click="clickTask">
       <div class="column is-4">{{ task.description || "Generic Task" }}</div>
       <div class="column is-5">{{ task.project?.name || "N/D" }}</div>
       <div class="column">
@@ -18,6 +18,7 @@ import BoxComponent from "./BoxComponent.vue";
 
 export default defineComponent({
   name: "TaskComponent",
+  emits: ["onClickTask"],
   components: {
     TimePassed,
     BoxComponent,
@@ -28,5 +29,16 @@ export default defineComponent({
       required: true,
     },
   },
+  methods: {
+    clickTask() {
+      this.$emit("onClickTask", this.task);
+    },
+  },
 });
 </script>
+
+<style scoped>
+.task:hover {
+  cursor: pointer;
+}
+</style>

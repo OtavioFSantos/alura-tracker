@@ -1,20 +1,55 @@
 <template>
-    <TaskForm @onSaveTask="saveTask" />
-    <div class="taskList">
-        <BoxComponent v-if="emptyList"> No tasks yet! </BoxComponent>
-        <TaskComponent
-          v-for="(task, index) in tasks"
-          :key="index"
-          :task="task"
-        />
+  <TaskForm @onSaveTask="saveTask" />
+  <div class="taskList">
+    <BoxComponent v-if="emptyList">No tasks yet!</BoxComponent>
+    <TaskComponent
+      v-for="(task, index) in tasks"
+      :key="index"
+      :task="task"
+      @onClickTask="selectTask"
+    />
+    <div
+      class="modal"
+      :class="{ 'is-active': selectedTask }"
+      v-if="selectedTask"
+    >
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Edit task</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="closeModal"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label for="taskDescription" class="label">Description</label>
+            <input
+              id="taskDescription"
+              class="input"
+              v-model="selectedTask.description"
+              type="text"
+            />
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button" @click="closeModal">Cancel</button>
+        </footer>
+      </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import TaskForm from "../components/TaskForm.vue";
 import TaskComponent from "../components/TaskComponent.vue";
-import ITask from "../interface/ITask";
+import { GET_TASKS, REGISTER_TASK, GET_PROJECTS } from "@/store/type-actions";
+import { useStore } from "@/store";
+import ITask from "@/interface/ITask";
 import BoxComponent from "../components/BoxComponent.vue";
 
 export default defineComponent({
@@ -26,18 +61,33 @@ export default defineComponent({
   },
   data() {
     return {
-      tasks: [] as ITask[]
+      selectedTask: null as ITask | null,
     };
+  },
+  methods: {
+    saveTask(task: ITask) {
+      this.store.dispatch(REGISTER_TASK, task);
+    },
+    selectTask(task: ITask) {
+      this.selectedTask = task;
+    },
+    closeModal() {
+      this.selectedTask = null;
+    },
   },
   computed: {
     emptyList(): boolean {
       return this.tasks.length === 0;
     },
   },
-  methods: {
-    saveTask(task: ITask) {
-      this.tasks.push(task);
-    }
+  setup() {
+    const store = useStore();
+    store.dispatch(GET_TASKS);
+    store.dispatch(GET_PROJECTS);
+    return {
+      tasks: computed(() => store.state.tasks),
+      store,
+    };
   },
 });
 </script>
