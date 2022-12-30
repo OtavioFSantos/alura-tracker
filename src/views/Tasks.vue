@@ -1,7 +1,20 @@
 <template>
   <TaskForm @onSaveTask="saveTask" />
   <div class="taskList">
-    <BoxComponent v-if="emptyList">No tasks yet!</BoxComponent>
+    <BoxComponent v-if="emptyList">No tasks!</BoxComponent>
+    <div class="field">
+      <p class="control has-icons-left">
+        <input
+          class="input"
+          type="text"
+          placeholder="Filter tasks"
+          v-model="filterTasks"
+        />
+        <span class="icon is-small is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </p>
+    </div>
     <TaskComponent
       v-for="(task, index) in tasks"
       :key="index"
@@ -46,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import TaskForm from "../components/TaskForm.vue";
 import TaskComponent from "../components/TaskComponent.vue";
 import {
@@ -95,9 +108,18 @@ export default defineComponent({
     const store = useStore();
     store.dispatch(GET_TASKS);
     store.dispatch(GET_PROJECTS);
+    const filterTasks = ref("");
+
+    const tasks = computed(() =>
+      store.state.task.tasks.filter(
+        (t) => !filterTasks.value || t.description.includes(filterTasks.value)
+      )
+    );
+
     return {
-      tasks: computed(() => store.state.task.tasks),
+      tasks,
       store,
+      filterTasks,
     };
   },
 });
