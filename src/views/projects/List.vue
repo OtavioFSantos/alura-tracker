@@ -45,25 +45,25 @@ import { TypeNotification } from "@/interface/INotification";
 
 export default defineComponent({
   name: "List-component",
-  methods: {
-    remove(id: string) {
-      this.store.dispatch(ERASE_PROJECT, id).then(() => {
-        this.notify(
+  setup() {
+    const store = useStore();
+    store.dispatch(GET_PROJECTS);
+    const { notify } = useNotifier();
+    const projects = computed(() => store.state.project.projects);
+
+    const remove = (id: string) => {
+      store.dispatch(ERASE_PROJECT, id).then(() => {
+        notify(
           TypeNotification.FAIL,
           "Project removed",
           "Project is not available anymore"
         );
       });
-    },
-  },
-  setup() {
-    const store = useStore();
-    store.dispatch(GET_PROJECTS);
-    const { notify } = useNotifier();
+    };
+
     return {
-      projects: computed(() => store.state.project.projects),
-      store,
-      notify,
+      projects,
+      remove,
     };
   },
 });

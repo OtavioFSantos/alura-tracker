@@ -11,12 +11,12 @@
       </div>
       <div class="column is-3">
         <div class="select">
-          <select v-model="idProject">
+          <select v-model="projectId">
             <option value="">Select Project</option>
             <option
+              :value="project.id"
               v-for="project in projects"
               :key="project.id"
-              :value="project.id"
             >
               {{ project.name }}
             </option>
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import TimerComponent from "./TimerComponent.vue";
 import { useStore } from "vuex";
 import { key } from "@/store";
@@ -42,26 +42,26 @@ export default defineComponent({
   components: {
     TimerComponent,
   },
-  data() {
-    return {
-      description: "",
-      idProject: "",
-    };
-  },
-  methods: {
-    taskFinished(TimePassed: number): void {
-      this.$emit("onSaveTask", {
-        timeSeconds: TimePassed,
-        description: this.description,
-        project: this.projects.find((proj) => proj.id == this.idProject),
-      });
-      this.description = "";
-    },
-  },
-  setup() {
+  setup(props, { emit }) {
     const store = useStore(key);
+    const description = ref("");
+    const projectId = ref("");
+    const projects = computed(() => store.state.project.projects);
+
+    const taskFinished = (TimePassed: number): void => {
+      emit("onSaveTask", {
+        timeSeconds: TimePassed,
+        description: description.value,
+        project: projects.value.find((proj) => proj.id == projectId.value),
+      });
+      description.value = "";
+    };
+
     return {
-      projects: computed(() => store.state.project.projects),
+      projects,
+      projectId,
+      description,
+      taskFinished,
     };
   },
 });

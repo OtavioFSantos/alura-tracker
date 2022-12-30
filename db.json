@@ -1,5 +1,14 @@
 {
-  "projects": [],
+  "projects": [
+    {
+      "id": 1,
+      "name": "TypeScript"
+    },
+    {
+      "name": "Haskell",
+      "id": 2
+    }
+  ],
   "tasks": [
     {
       "timeSeconds": 200,
@@ -10,6 +19,15 @@
       "timeSeconds": 150,
       "description": "Drawing",
       "id": 2
+    },
+    {
+      "timeSeconds": 1,
+      "description": "Estudando a sintaxe",
+      "project": {
+        "name": "Haskell",
+        "id": 2
+      },
+      "id": 3
     }
   ]
 }

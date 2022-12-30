@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import useNotifier from "@/hooks/notifier";
 import { TypeNotification } from "@/interface/INotification";
 import { useStore } from "@/store";
@@ -31,54 +32,50 @@ export default defineComponent({
       type: String,
     },
   },
-  mounted() {
-    if (this.id) {
-      const project = this.store.state.project.projects.find(
-        (proj) => proj.id == this.id
+  setup(props) {
+    const router = useRouter();
+    const store = useStore();
+    const { notify } = useNotifier();
+    const projectName = ref("");
+
+    if (props.id) {
+      const project = store.state.project.projects.find(
+        (proj) => proj.id == props.id
       );
-      this.projectName = project?.name || "";
+      projectName.value = project?.name || "";
     }
-  },
-  data() {
-    return {
-      projectName: "",
-    };
-  },
-  methods: {
-    save() {
-      if (this.id) {
-        this.store
+
+    const save = () => {
+      if (props.id) {
+        store
           .dispatch(MODIFY_PROJECT, {
-            id: this.id,
-            name: this.projectName,
+            id: props.id,
+            name: projectName.value,
           })
           .then(() => {
-            this.notify(
+            notify(
               TypeNotification.WARNING,
               "Project modified",
               "Project is now modified"
             );
-            this.$router.push("/projects");
+            router.push("/projects");
           });
       } else {
-        this.store.dispatch(REGISTER_PROJECT, this.projectName).then(() => {
-          this.notify(
+        store.dispatch(REGISTER_PROJECT, projectName.value).then(() => {
+          projectName.value = "";
+          notify(
             TypeNotification.SUCCESS,
             "Project created",
             "Project is now available"
           );
-          this.projectName = "";
-          this.$router.push("/projects");
+          router.push("/projects");
         });
       }
-    },
-  },
-  setup() {
-    const store = useStore();
-    const { notify } = useNotifier();
+    };
+
     return {
-      store,
-      notify,
+      projectName,
+      save,
     };
   },
 });
