@@ -61,7 +61,7 @@ export default defineComponent({
     store.dispatch(GET_PROJECTS);
     const { notify } = useNotifier();
     return {
-      projects: computed(() => store.state.projects),
+      projects: computed(() => store.state.project.projects),
       store,
       notify,
     };

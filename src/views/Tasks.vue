@@ -35,7 +35,9 @@
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
+          <button class="button is-success" @click="changeTask">
+            Save changes
+          </button>
           <button class="button" @click="closeModal">Cancel</button>
         </footer>
       </div>
@@ -47,7 +49,12 @@
 import { defineComponent, computed } from "vue";
 import TaskForm from "../components/TaskForm.vue";
 import TaskComponent from "../components/TaskComponent.vue";
-import { GET_TASKS, REGISTER_TASK, GET_PROJECTS } from "@/store/type-actions";
+import {
+  GET_TASKS,
+  REGISTER_TASK,
+  GET_PROJECTS,
+  MODIFY_TASK,
+} from "@/store/type-actions";
 import { useStore } from "@/store";
 import ITask from "@/interface/ITask";
 import BoxComponent from "../components/BoxComponent.vue";
@@ -73,6 +80,10 @@ export default defineComponent({
     },
     closeModal() {
       this.selectedTask = null;
+    },
+    changeTask() {
+      this.store.dispatch(MODIFY_TASK, this.selectedTask);
+      this.closeModal();
     },
   },
   computed: {
