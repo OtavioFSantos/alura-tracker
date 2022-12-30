@@ -12,7 +12,7 @@
   "tasks": [
     {
       "timeSeconds": 200,
-      "description": "Studying Vue",
+      "description": "Studying Vuex",
       "id": 1
     },
     {

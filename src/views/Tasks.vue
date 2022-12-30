@@ -21,45 +21,34 @@
       :task="task"
       @onClickTask="selectTask"
     />
-    <div
-      class="modal"
-      :class="{ 'is-active': selectedTask }"
-      v-if="selectedTask"
-    >
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Edit task</p>
-          <button
-            class="delete"
-            aria-label="close"
-            @click="closeModal"
-          ></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="field">
-            <label for="taskDescription" class="label">Description</label>
-            <input
-              id="taskDescription"
-              class="input"
-              v-model="selectedTask.description"
-              type="text"
-            />
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" @click="changeTask">
-            Save changes
-          </button>
-          <button class="button" @click="closeModal">Cancel</button>
-        </footer>
-      </div>
-    </div>
+    <Modal :display="selectedTask != null">
+      <template v-slot:head>
+        <p class="modal-card-title">Edit task</p>
+        <button class="delete" aria-label="close" @click="closeModal"></button>
+      </template>
+      <template v-slot:body>
+        <div class="field">
+          <label for="taskDescription" class="label">Description</label>
+          <input
+            id="taskDescription"
+            class="input"
+            v-model="selectedTask.description"
+            type="text"
+          />
+        </div>
+      </template>
+      <template v-slot:foot>
+        <button class="button is-success" @click="changeTask">
+          Save changes
+        </button>
+        <button class="button" @click="closeModal">Cancel</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watchEffect } from "vue";
 import TaskForm from "../components/TaskForm.vue";
 import TaskComponent from "../components/TaskComponent.vue";
 import {
@@ -71,6 +60,7 @@ import {
 import { useStore } from "@/store";
 import ITask from "@/interface/ITask";
 import BoxComponent from "../components/BoxComponent.vue";
+import Modal from "@/components/Modal.vue";
 
 export default defineComponent({
   name: "App",
@@ -78,6 +68,7 @@ export default defineComponent({
     TaskForm,
     TaskComponent,
     BoxComponent,
+    Modal,
   },
   data() {
     return {
@@ -110,14 +101,12 @@ export default defineComponent({
     store.dispatch(GET_PROJECTS);
     const filterTasks = ref("");
 
-    const tasks = computed(() =>
-      store.state.task.tasks.filter(
-        (t) => !filterTasks.value || t.description.includes(filterTasks.value)
-      )
-    );
+    watchEffect(() => {
+      store.dispatch(GET_TASKS, filterTasks.value);
+    });
 
     return {
-      tasks,
+      tasks: computed(() => store.state.task.tasks),
       store,
       filterTasks,
     };

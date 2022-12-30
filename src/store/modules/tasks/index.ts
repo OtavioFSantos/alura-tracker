@@ -23,8 +23,14 @@ export const task: Module<TaskState, State> = {
     },
   },
   actions: {
-    [GET_TASKS]({ commit }) {
-      http.get("tasks").then((response) => commit(DEFINE_TASKS, response.data));
+    [GET_TASKS]({ commit }, filterTasks: string) {
+      let url = "tasks";
+
+      if (filterTasks) {
+        url += "?description=" + filterTasks;
+      }
+
+      http.get(url).then((response) => commit(DEFINE_TASKS, response.data));
     },
     [REGISTER_TASK]({ commit }, task: ITask) {
       return http
