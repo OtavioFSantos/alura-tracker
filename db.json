@@ -2,14 +2,9 @@
   "projects": [],
   "tasks": [
     {
-      "timeSeconds": 3,
-      "description": "Estudar Vue",
+      "timeSeconds": 2,
+      "description": "aaaaaaddsdsd",
       "id": 1
-    },
-    {
-      "timeSeconds": 4,
-      "description": "Desenhar",
-      "id": 2
     }
   ]
 }
